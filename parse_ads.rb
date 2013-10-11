@@ -9,7 +9,7 @@ class ParseAds < Browser
     @ads = []
     @parser = nil
   end
-  def parseLinks link #http://www.avito.ru/pyatigorsk/avtomobili_s_probegom
+  def parseLinks link
     open link
     @parser = ParseAd.new
     @content = @browser.h3(class: 't_i_h3').as(class: 'second-link').each do |url|
