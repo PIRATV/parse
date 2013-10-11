@@ -10,9 +10,11 @@ begin
   ads.getAds.each do |ad|
     puts ad
   end
+  ads.close
 rescue Timeout::Error
   puts 'Caught a TimeOut error..'
   sleep 1
-#rescue
- # parse.close
+  ads.close
+rescue
+  ads.close
 end
