@@ -56,7 +56,7 @@ class ParseAd < Browser
     @info[:model_id] = info.as[1].text
     puts 'parsing year...'
     @info[:year_from] = info.as[2].text.gsub /\D*/, ''
-    matches = info.div.text.split(/Пробег\s*(?<mileage_from>\d+(?:\s*)(?:\d+)?)\s*-?\s*(?<mileage_to>\d+(?:\s*?)\d+).*\s*(?<engine_size>\d+\.?\d+).*(?<box>[ам]т(?=,)),\s*(?<engine>[а-яёa-z]+(?=,)),\s*(?<privod>[а-яёa-z]+)\s*[а-яёa-z]+(?=,),\s*(?<cuzov>[а-яёa-z]+),\s*(?<rul>[а-яёa-z]+)\s*[а-яёa-z]+,\s*цвет\s*(?<color>[а-яёa-z]+)/i)
+    matches = info.div.text.split(/Пробег\s*(?<mileage_from>\d+(?:\s*)(?:\d+)?)\s*-?\s*(?<mileage_to>\d+(?:\s*?)\d+).*\s*(?<engine_size>\d+\.?\d+).*(?<box>[ам]т(?=,)),\s*(?<engine>[а-яёa-z]+(?=,)),\s*(?<privod>[а-яёa-z]+)\s*[а-яёa-z]+(?=,),\s*(?<carcass>[а-яёa-z]+),\s*(?<rudder>[а-яёa-z]+)\s*[а-яёa-z]+,\s*цвет\s*(?<color>[а-яёa-z]+)/i)
 
     puts 'parsing info...'
     matches.each do |key, value|
