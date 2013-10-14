@@ -6,16 +6,22 @@ require_relative 'parse_ad'
 
 class ParseAds < Browser
   def initialize
-    @ads = []
+    @ads = Array.new
     @parser = nil
   end
   def parseLinks link
     open link
     @parser = ParseAd.new
-    @content = @browser.h3(class: 't_i_h3').as(class: 'second-link').each do |url|
-      @parser.open url.attribute_value('href')
+    i = 0
+    @content = @browser.h3s(class: 't_i_h3').each do |link|
+      i += 1
+      @parser.open link.a(class: 'second-link').attribute_value('href')
       @parser.go
-      @ads.push @parser.getContent
+      @ads << @parser.getContent
+      puts @ads
+      if i == 2
+        break
+      end
     end
     @parser.close
   end

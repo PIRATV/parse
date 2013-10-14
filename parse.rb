@@ -8,7 +8,7 @@ ads = ParseAds.new
 begin
   ads.parseLinks 'http://www.avito.ru/pyatigorsk/avtomobili_s_probegom/'
   ads.getAds.each do |ad|
-    puts ad
+    puts ad[:title]
   end
   ads.close
 rescue Timeout::Error

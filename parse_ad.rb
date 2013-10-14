@@ -74,8 +74,10 @@ class ParseAd < Browser
 
     open @link.sub(/www\.avito\.ru/i, 'm.avito.ru')
     puts 'parsing phone...'
+    @browser.wait_until { @browser.a(id: 'showPhoneBtn').exists? }
     @browser.a(id: 'showPhoneBtn').click
-    sleep 3
+    @browser.wait_until { @browser.li(class: 'para m_item_phone').exists? }
+    @browser.li(class: 'para m_item_phone').a.wait_until_present
     @info[:phone] = @browser.li(class: 'para m_item_phone').a.text.gsub /\D*/, ''
     puts 'done'
     @info
