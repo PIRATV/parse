@@ -51,17 +51,17 @@ class ParseAd < Browser
   def getInfo
     info = @content.dd :class, 'item-params c-1'
     puts 'parsing mark...'
-    @info[:mark_id] = info.as[0].text
+    @info[:mark] = info.as[0].text
     puts 'parsing model...'
-    @info[:model_id] = info.as[1].text
+    @info[:model] = info.as[1].text
     puts 'parsing year...'
     @info[:year_from] = info.as[2].text.gsub /\D*/, ''
-    matches = info.div.text.split(/Пробег\s*(?<mileage_from>\d+(?:\s*)(?:\d+)?)\s*-?\s*(?<mileage_to>\d+(?:\s*?)\d+).*\s*(?<engine_size>\d+\.?\d+).*(?<box>[ам]т(?=,)),\s*(?<engine>[а-яёa-z]+(?=,)),\s*(?<privod>[а-яёa-z]+)\s*[а-яёa-z]+(?=,),\s*(?<carcass>[а-яёa-z]+),\s*(?<rudder>[а-яёa-z]+)\s*[а-яёa-z]+,\s*цвет\s*(?<color>[а-яёa-z]+)/i)
+    matches = info.divs[1].text.match(/Пробег\s*(?<mileage_from>\d+(?:\s*)(?:\d+)?)\s*-?\s*(?<mileage_to>\d+(?:\s*)\d+).*\s*(?<engine_size>\d+\.?\d+).*(?<box>[ам]т(?=,)),\s*(?<engine>[а-яёa-z]+(?=,)),\s*(?<privod>[а-яёa-z]+)\s*[а-яёa-z]+(?=,),\s*(?<carcass>[а-яёa-z]+),\s*(?<rudder>[а-яёa-z]+)\s*[а-яёa-z]+,\s*цвет\s*(?<color>[а-яёa-z]+)/i)
 
     puts 'parsing info...'
-    matches.each do |key, value|
+    matches.names.each do |key|
       continue if key =~ /\A\d+\z/
-      @info[key.to_sym] = value
+      @info[key.to_sym] = matches[key]
     end
 
     info = @content.div(:id, 'map').spans(:class, 'c-1')

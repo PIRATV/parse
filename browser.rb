@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 require 'watir-webdriver'
+require_relative 'string'
 
 class Browser
 
