@@ -53,8 +53,9 @@ class Add < Browser
 
   def selectValue id, value
     @browser.select(id: id).wait_until_present
+    @browser.select(id: id).option.wait_until_present
     @browser.select(id: id).options.each do |option|
-      continue if option.text.empty? or option.value.empty?
+      continue if option.nil? or option.text.empty? or option.value.empty?
       if option.text.downcase.include? value.downcase or option.value.downcase.include? value.downcase then
         @browser.select(id: id).select_value option.value
         @browser.select(id: id).click
