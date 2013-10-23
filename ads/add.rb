@@ -3,6 +3,7 @@ require_relative '../browser'
 class Add < Browser
   def openAddPage ad
     open 'http://spravkapira.ru/ads/add/'
+
     puts 'select category..'
     @browser.select(id: 'Ad_category_id').select_value 1
     @browser.select(id: 'Ad_category_id').click
@@ -46,7 +47,20 @@ class Add < Browser
     @browser.text_field(id: 'Ad_text').value = ad[:text]
 
     puts 'upload files..'
-    @browser.file_field.value = ad[:images[0]]
+    %x| cd /var/www/parse/ads/images/ |
+    ad[:images].each do |image|
+      %x| curl #{image} -O |
+      @browser.file_field.value = image.gsub(/.*\/(.*?\.(?:jpe?g|png|gif))\Z/i, '/var/www/parse/ads/images/\\1')
+    end
+
+=begin
+    File.open '1.jpg', File::CREAT | File::RDWR, 0775 do |f|
+      f.write IO.open('http://s55.radikal.ru/i147/0812/d8/dd099b5e4eb4.jpg').read
+    end
+    #@browser.image(src: 'http://s55.radikal.ru/i147/0812/d8/dd099b5e4eb4.jpg').save('./images/1.jpg')
+=end
+    #@browser.image(src: './images/1.jpg').wait_until_present
+    #@browser.file_field.value = '/var/www/parse/ads/images/dd099b5e4eb4.jpg' #ad[:images[0]]
     puts 'done'
 
   end
@@ -55,7 +69,7 @@ class Add < Browser
     @browser.select(id: id).wait_until_present
     @browser.select(id: id).option.wait_until_present
     @browser.select(id: id).options.each do |option|
-      continue if option.nil? or option.text.empty? or option.value.empty?
+      next if option.nil? or option.text.empty? or option.value.empty?
       if option.text.downcase.include? value.downcase or option.value.downcase.include? value.downcase then
         @browser.select(id: id).select_value option.value
         @browser.select(id: id).click
