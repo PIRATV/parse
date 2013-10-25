@@ -70,7 +70,11 @@ class ParseAd < Browser
     puts 'parsing city...'
     @info[:city] = info[1].text
     puts 'parsing text...'
-    @info[:text] = @content.dd(:id, 'desc_text').text.gsub /<p>(.*?)<\/p>/i, "\\1\n"
+    if @content.dd(id: 'desc_text').exists?
+      @info[:text] = @content.dd(:id, 'desc_text').text.gsub /<p>(.*?)<\/p>/i, "\\1\n"
+    else
+      @info[:text] = "#{@info[:mark]} #{@info[:model]}, #{@info[:year_from]} г.в., пробег #{@info[:mileage_from]} - #{@info[:mileage_to]} км."
+    end
 
     open @link.sub(/www\.avito\.ru/i, 'm.avito.ru')
     puts 'parsing phone...'

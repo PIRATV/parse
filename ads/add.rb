@@ -25,8 +25,10 @@ class Add < Browser
     selectValue 'Transport_engine_size', ad[:engine_size]
     puts 'select year..'
     selectValue 'Ad_year_from', ad[:year_from]
+
     puts 'select box..'
-    boxes = {'\u041c\u0422'=>1, '\u0410\u0422'=>2, '\u0420\u0422'=>3}
+    boxes = {"\u041c\u0422"=>1, "\u0410\u0422"=>2, "\u0420\u0422"=>3}
+    puts boxes[ad[:box]]
     selectValue 'Transport_box_id', boxes[ad[:box]]
     puts 'select mileage from..'
     selectValue 'Transport_mileage_from', ad[:mileage_from].gsub(/\D*/, '')
@@ -45,35 +47,40 @@ class Add < Browser
     @browser.text_field(id: 'User_email').value = 'piratv@inbox.ru'
     puts 'enter text..'
     @browser.text_field(id: 'Ad_text').value = ad[:text]
-
     puts 'upload files..'
-    %x| cd /var/www/parse/ads/images/ |
     ad[:images].each do |image|
-      %x| curl #{image} -O |
-      @browser.file_field.value = image.gsub(/.*\/(.*?\.(?:jpe?g|png|gif))\Z/i, '/var/www/parse/ads/images/\\1')
+      %x|
+        cd /var/www/parse/ads/images
+        curl #{image} -O
+      |
+      @browser.file_field.value = image.gsub(/.*\/(.*?\.(?:jpe?g|png|gif))\Z/i, "/var/www/parse/ads/images/\\1")
+      File.unlink image.gsub(/.*\/(.*?\.(?:jpe?g|png|gif))\Z/i, "/var/www/parse/ads/images/\\1")
     end
-
-=begin
-    File.open '1.jpg', File::CREAT | File::RDWR, 0775 do |f|
-      f.write IO.open('http://s55.radikal.ru/i147/0812/d8/dd099b5e4eb4.jpg').read
-    end
-    #@browser.image(src: 'http://s55.radikal.ru/i147/0812/d8/dd099b5e4eb4.jpg').save('./images/1.jpg')
-=end
-    #@browser.image(src: './images/1.jpg').wait_until_present
-    #@browser.file_field.value = '/var/www/parse/ads/images/dd099b5e4eb4.jpg' #ad[:images[0]]
     puts 'done'
 
+    @browser.form(id: 'submit-form').submit
+    sleep 5
   end
 
-  def selectValue id, value
-    @browser.select(id: id).wait_until_present
-    @browser.select(id: id).option.wait_until_present
+  def selectValue id, value, wait = true
+    if wait then
+      @browser.select(id: id).wait_until_present
+      @browser.select(id: id).option.wait_until_present
+    end
     @browser.select(id: id).options.each do |option|
-      next if option.nil? or option.text.empty? or option.value.empty?
-      if option.text.downcase.include? value.downcase or option.value.downcase.include? value.downcase then
-        @browser.select(id: id).select_value option.value
-        @browser.select(id: id).click
-        break
+      next if option.nil? or option.text.empty? or option.value.empty? or option.text.nil? or option.value.nil?
+      if option.text.numeric? or option.value.numeric? then
+        if option.text == value or option.value == value then
+          @browser.select(id: id).select_value option.value
+          @browser.select(id: id).click
+          break
+        end
+      else
+        if option.text.downcase.include? value.downcase or option.value.downcase.include? value.downcase then
+          @browser.select(id: id).select_value option.value
+          @browser.select(id: id).click
+          break
+        end
       end
     end
   end

@@ -21,4 +21,12 @@ class String
   def capitalize!
     self.replace capitalize
   end
+
+  def numeric?
+    if self =~ /\./ then
+      true if Float(self) rescue false
+    else
+      true if Integer(self) rescue false
+    end
+  end
 end
