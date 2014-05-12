@@ -1,4 +1,6 @@
-#coding utf-8
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+
 require "unicode"
 class String
   def downcase

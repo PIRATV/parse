@@ -11,13 +11,13 @@ begin
   ads.getAds.each do |ad|
     add = Add.new
     add.openAddPage ad
-    #add.close
+    add.close
   end
   ads.close
 rescue Timeout::Error
   puts 'Caught a TimeOut error..'
   sleep 1
   ads.close
-#rescue
-  #ads.close
+rescue
+  ads.close
 end

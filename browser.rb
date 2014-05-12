@@ -21,12 +21,12 @@ class Browser
 
   def client timeout=180
     @client ||= Selenium::WebDriver::Remote::Http::Default.new
-    @client.timeout ||= timeout # seconds – default is 60
+    @client.timeout ||= timeout # seconds – default is 180
   end
 
   def browser browser=:ff
     client
-    @browser ||= Watir::Browser.new :ff, :http_client => @client
+    @browser ||= Watir::Browser.new browser, :http_client => @client
     @browser ||= Watir::Browser.new
   end
 

@@ -11,9 +11,9 @@ class ParseAds < Browser
   end
   def parseLinks link
     open link
-    @browser.h3s(class: 't_i_h3').each do |link|
+    @browser.h3s(class: 'title').each do |link|
       @parser = ParseAd.new
-      @parser.open link.a(class: 'second-link').attribute_value('href')
+      @parser.open link.a.attribute_value('href')
       @parser.go
       @ads << @parser.getContent
       @parser.close

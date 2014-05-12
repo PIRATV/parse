@@ -1,3 +1,6 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+
 require_relative '../browser'
 
 class Add < Browser
@@ -50,15 +53,15 @@ class Add < Browser
     puts 'upload files..'
     ad[:images].each do |image|
       %x|
-        cd /var/www/parse/ads/images
+        cd /var/ruby/parse/ads/images
         curl #{image} -O
       |
-      @browser.file_field.value = image.gsub(/.*\/(.*?\.(?:jpe?g|png|gif))\Z/i, "/var/www/parse/ads/images/\\1")
-      File.unlink image.gsub(/.*\/(.*?\.(?:jpe?g|png|gif))\Z/i, "/var/www/parse/ads/images/\\1")
+      @browser.file_field.value = image.gsub(/.*\/(.*?\.(?:jpe?g|png|gif))\Z/i, "/var/ruby/parse/ads/images/\\1")
+      File.unlink image.gsub(/.*\/(.*?\.(?:jpe?g|png|gif))\Z/i, "/var/ruby/parse/ads/images/\\1")
     end
     puts 'done'
 
-    @browser.form(id: 'submit-form').submit
+    @browser.form(id: 'upload-form').submit
     sleep 5
   end
 
